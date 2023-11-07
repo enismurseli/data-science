@@ -1,0 +1,151 @@
+version: '3'
+services:
+
+  web:
+    image: django:latest  # Use an appropriate Django image
+    container_name: django_web
+    # command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./django_app:/app  # Mount your Django project directory
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=django_app.settings  # Replace with your Django project settings
+
+  celery:
+    image: celery:latest  # Use an appropriate Celery image
+    container_name: celery_worker
+    volumes:
+      - ./django_app:/app  # Mount your Django project directory
+    command: celery -A django_app worker -l info  # Adjust this command based on your project
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=django_app.settings  # Replace with your Django project settings
+    networks:
+      - my_network
+
+  db:
+    image: postgres:latest  # Use an appropriate database image (e.g., PostgreSQL)
+    container_name: django_db
+    environment:
+      POSTGRES_DB: tobot
+      POSTGRES_USER: dbadmin
+      POSTGRES_PASSWORD: dbadmin123
+      
+  jupyter:
+    container_name: jupyter_container
+    build:
+      context: ./jupyter
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/notebooks
+    environment:
+      - SPARK_MASTER=spark://spark:7077
+      - CASSANDRA_HOST=cassandra
+      - REDIS_HOST=redis
+
+  cassandra-node1:
+    image: cassandra:latest
+    container_name: cassandra-node1
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-node1
+      - CASSANDRA_LISTEN_ADDRESS=cassandra-node1
+    networks:
+      - my_network
+
+  cassandra-node2:
+    image: cassandra:latest
+    container_name: cassandra-node2
+    ports:
+      - "9043:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+      - CASSANDRA_SEEDS=cassandra-node1
+      - CASSANDRA_LISTEN_ADDRESS=cassandra-node2
+    networks:
+      - my_network
+    depends_on:
+      - cassandra-node1
+
+
+  redis-node1:
+    image: redis:latest
+    container_name: redis-node1
+    ports:
+      - "6379:6379"
+    networks:
+      - my_network
+
+  redis-node2:
+    image: redis:latest
+    container_name: redis-node2
+    ports:
+      - "6380:6379"
+    networks:
+      - my_network
+  
+  dask-scheduler:
+    container_name: my_dask_scheduler_container
+    image: daskdev/dask
+    command: ["dask-scheduler"]
+    networks:
+      - my_network
+
+  mongo1:
+    image: mongo:latest
+    container_name: mongo1
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_REPLICA_SET=my-mongo-set
+    networks:
+      - my_network
+
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_REPLICA_SET=my-mongo-set
+    networks:
+      - my_network
+
+
+  dask-worker1:
+    container_name: my_dask_worker_container1
+    image: daskdev/dask
+    command: ["dask-worker", "my_dask_scheduler_container:8786"]
+    networks:
+      - my_network
+
+  dask-worker2:
+    container_name: my_dask_worker_container2
+    image: daskdev/dask
+    command: ["dask-worker", "my_dask_scheduler_container:8786"]
+    networks:
+      - my_network
+
+  pytorch:
+    image: pytorch/pytorch:latest  # Use an appropriate PyTorch image
+    container_name: pytorch_instance
+    command: bash
+    volumes:
+      - ./ml_models:/ml_models  # Mount a directory for your machine learning models
+    environment:
+      - PYTHONPATH=/ml_models  # Set PYTHONPATH to your models directory
+    networks:
+      - my_network
+
+networks:
+  my_network:
