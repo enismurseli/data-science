@@ -1,0 +1,15 @@
+<!-- tobot/templates/tobot/post_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>tobot Post List</title>
+</head>
+<body>
+    <h1>tobot Post List</h1>
+    <ul>
+        {% for post in posts %}
+            <li>{{ post.title }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

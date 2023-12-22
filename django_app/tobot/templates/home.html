@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - My Complex Django App{% endblock %}
+
+{% block leftsidebar %}
+<a href="#">Section 1</a>
+<a href="#">Section 2</a>
+<!-- Add more sidebar links as needed -->
+{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <h1>Welcome to the Home Page</h1>
+        <p>This is the content of the home page.</p>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <h2>Feature 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+
+        <div class="feature">
+            <h2>Feature 2</h2>
+            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+
+         <div class="feature">
+            <h2>Feature 2</h2>
+            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+
+        <!-- Add more features as needed -->
+    </section>
+{% endblock %}

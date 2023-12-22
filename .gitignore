@@ -1,0 +1,44 @@
+pyenv
+*.pyc
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local development settings
+*.sqlite3
+db.sqlite3
+
+# Media files
+media/
+
+# Static files
+static/
+
+# Environment variables file
+.env
+
+# IDE-specific files
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Django migrations
+*.py[co]
+__pycache__
+db.sqlite3
+*.sqlite3
+
+# Log files
+*.log
+
+# Other
+*.swp
+.DS_Store
+Thumbs.db

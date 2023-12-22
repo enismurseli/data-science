@@ -1,0 +1,61 @@
+// .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Django in Docker",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/django_app/manage.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:8000"
+            ],
+            "django": true,
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}/django_app",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "django_app.settings"
+            },
+            "envFile": "${workspaceFolder}/django_app/.env",
+            "preLaunchTask": "docker-compose-up",
+            "postDebugTask": "docker-compose-down",
+            "debugOptions": [
+                "RedirectOutput"
+            ],
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bStarting development server at (http://[\\S]+/)"
+            },
+            "showSubstitutions": true
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Django in Docker",
+            "configurations": ["Django in Docker"]
+        }
+    ],
+    "tasks": {
+        "docker-compose-up": {
+            "label": "docker-compose-up",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["up", "--build", "-d"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        "docker-compose-down": {
+            "label": "docker-compose-down",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["down"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    }
+}
