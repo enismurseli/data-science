@@ -80,7 +80,4 @@ print(ohlcv)
     Dow Jones Commodity Index
 
 
-# Tasks
-1.  Store such data on different on Casandra, Mongodb, Redis 
-2.  Build a celery tasks that import new data every 8 hours 
-3.  Make possible to retrive such data and show them using django 
+ 
