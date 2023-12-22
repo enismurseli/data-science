@@ -1,4 +1,3 @@
-# data-science
 
 # Arkitektura e aplikacionit
   - Aplikacioni do te zhvillohet duke perdorur docker. Mjafton te shkarkohet projekti nga github dhe te behet run komanda 
